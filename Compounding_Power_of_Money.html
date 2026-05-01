@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Power of Compounding Money</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', 'Noto Sans Sinhala', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 50vh;
+            max-height: 500px;
+            min-height: 300px;
+        }
+        input[type=range] { accent-color: #059669; }
+
+        /* Language Toggle */
+        #lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: #f0fdf4;
+            border: 1.5px solid #6ee7b7;
+            border-radius: 9999px;
+            padding: 3px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        #lang-toggle .lang-btn {
+            padding: 4px 14px;
+            border-radius: 9999px;
+            transition: background 0.18s, color 0.18s;
+            color: #6b7280;
+        }
+        #lang-toggle .lang-btn.active {
+            background: #059669;
+            color: #ffffff;
+            box-shadow: 0 1px 4px rgba(5,150,105,0.18);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">&#128200;</span>
+                    <span class="font-bold text-xl tracking-tight text-emerald-800">WealthFlow</span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="hidden md:flex space-x-8">
+                        <a href="#concept" class="text-stone-600 hover:text-emerald-600 transition-colors font-medium" data-t="nav_concept">Concept</a>
+                        <a href="#simulator" class="text-stone-600 hover:text-emerald-600 transition-colors font-medium" data-t="nav_simulator">Calculator</a>
+                        <a href="#time-factor" class="text-stone-600 hover:text-emerald-600 transition-colors font-medium" data-t="nav_time">Importance of Time</a>
+                    </div>
+                    <!-- Language Toggle -->
+                    <div id="lang-toggle" role="group" aria-label="Language switcher">
+                        <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+                        <button class="lang-btn" id="btn-si" onclick="setLang('si')">සිං</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-stone-900 leading-tight mb-6">
+            <span data-t="hero_prefix">Discover the </span><span class="text-emerald-600" data-t="hero_highlight">Eighth Wonder of the World</span>
+        </h1>
+        <p class="text-lg md:text-xl text-stone-600 mb-8 max-w-2xl mx-auto" data-t="hero_sub">
+            "Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it." Experience the extraordinary power that time gives to your money.
+        </p>
+        <a href="#simulator" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" data-t="hero_cta">
+            Start Calculating &#8595;
+        </a>
+    </header>
+
+    <section id="concept" class="py-16 bg-white border-y border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-900" data-t="concept_title">The Basic Mechanism</h2>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto" data-t="concept_sub">
+                    This section explains the key difference between simple interest and compound interest.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4" data-t="simple_vs_compound">Simple vs Compound Interest</h3>
+                    <p class="text-stone-600 mb-4" data-t="simple_desc">
+                        <strong>Simple Interest:</strong> Growth is calculated only on the original amount (Principal) you deposited. It grows in a straight line.
+                    </p>
+                    <p class="text-stone-600 mb-6" data-t="compound_desc">
+                        <strong>Compound Interest:</strong> Growth is calculated on both the principal and the previously earned interest. Interest earns interest, resulting in exponential growth over time.
+                    </p>
+                    <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                        <h4 class="font-semibold text-stone-900 mb-2" data-t="formula_title">The Formula</h4>
+                        <code class="block text-emerald-700 bg-emerald-50 p-3 rounded font-mono text-sm">
+                            A = P(1 + r/n)^(nt)
+                        </code>
+                        <p class="text-xs text-stone-500 mt-2" data-t="formula_legend">
+                            A = Total amount, P = Principal, r = Annual interest rate, n = Compounding frequency, t = Time (years)
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-stone-100">
+                    <div class="chart-container">
+                        <canvas id="conceptChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="simulator" class="py-20 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-900" data-t="sim_title">Interactive Simulator</h2>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto" data-t="sim_sub">
+                    Adjust the variables below to see how time, monthly savings, and interest rates affect your future financial position.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-md border border-stone-200 flex flex-col gap-6">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="font-semibold text-stone-700" data-t="lbl_principal">Initial Deposit</label>
+                            <span id="val-principal" class="text-emerald-600 font-bold">Rs. 10,000</span>
+                        </div>
+                        <input type="range" id="calc-principal" min="0" max="1000000" step="10000" value="100000" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="font-semibold text-stone-700" data-t="lbl_monthly">Monthly Contribution</label>
+                            <span id="val-monthly" class="text-emerald-600 font-bold">Rs. 5,000</span>
+                        </div>
+                        <input type="range" id="calc-monthly" min="0" max="100000" step="1000" value="5000" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="font-semibold text-stone-700" data-t="lbl_years">Time (Years)</label>
+                            <span id="val-years" class="text-emerald-600 font-bold">20 Years</span>
+                        </div>
+                        <input type="range" id="calc-years" min="1" max="50" step="1" value="20" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="font-semibold text-stone-700" data-t="lbl_rate">Annual Interest Rate</label>
+                            <span id="val-rate" class="text-emerald-600 font-bold">12.0%</span>
+                        </div>
+                        <input type="range" id="calc-rate" min="1" max="30" step="0.5" value="12.0" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div class="mt-auto pt-6 border-t border-stone-100">
+                        <div class="text-sm text-stone-500 mb-1" data-t="res_total_label">Future Total Value</div>
+                        <div id="res-total" class="text-4xl font-extrabold text-stone-900 tracking-tight">Rs. 0</div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <div class="text-xs text-stone-500 uppercase font-semibold mb-1" data-t="res_invest_label">Your Total Investment</div>
+                                <div id="res-principal" class="text-lg font-bold text-blue-600">Rs. 0</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-stone-500 uppercase font-semibold mb-1" data-t="res_interest_label">Total Interest Earned</div>
+                                <div id="res-interest" class="text-lg font-bold text-emerald-500">Rs. 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md border border-stone-200">
+                    <div class="chart-container h-full min-h-[400px]">
+                        <canvas id="simulatorChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="time-factor" class="py-16 bg-white border-t border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-900" data-t="time_title">The Price of Time</h2>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto" data-t="time_sub">
+                    Time is the most important factor in investing. Here we show how starting small early beats investing more later.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                    <div class="chart-container">
+                        <canvas id="scenarioChart"></canvas>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2">
+                    <h3 class="text-2xl font-bold mb-4" data-t="story_title">A Tale of Two Investors</h3>
+                    <p class="text-stone-600 mb-6" data-t="story_intro">
+                        Let's compare two investors who retire at age 65 with an annual return of 10%.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                            <h4 class="font-bold text-lg text-stone-900" data-t="inv_a_title">Investor 'A' — The Early Starter</h4>
+                            <p class="text-stone-600 mt-2 text-sm" data-t="inv_a_desc">
+                                Invests Rs. 10,000/month from age 25 to 35 only (just 10 years), then <strong>stops investing</strong>. But lets the money grow with compound interest until age 65.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                            <h4 class="font-bold text-lg text-stone-900" data-t="inv_b_title">Investor 'B' — The Late Starter</h4>
+                            <p class="text-stone-600 mt-2 text-sm" data-t="inv_b_desc">
+                                Waits until age 35 to start. Continuously invests Rs. 10,000/month from age 35 to 65 (30 full years).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p class="mt-6 text-stone-700 font-medium" data-t="story_conclusion">
+                        Even though Investor B puts in three times the money, Investor A's fund grows larger — because of the extra time gained by starting early.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-emerald-900 text-emerald-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-6" data-t="r72_title">Rule of 72</h2>
+            <p class="text-emerald-100 text-lg mb-8" data-t="r72_desc">
+                A quick way to estimate how long it takes to double your investment. Simply divide 72 by your annual interest rate.
+            </p>
+            
+            <div class="bg-emerald-800/50 p-8 rounded-2xl backdrop-blur-sm border border-emerald-700 max-w-2xl mx-auto">
+                <div class="flex items-center justify-center gap-4 text-2xl font-bold mb-8">
+                    <span>72</span>
+                    <span class="text-emerald-400">/</span>
+                    <span id="r72-rate-display" class="text-emerald-300">8%</span>
+                    <span class="text-emerald-400">=</span>
+                    <span id="r72-years-display" class="text-white bg-emerald-600 px-4 py-2 rounded-lg">9 years</span>
+                </div>
+                
+                <input type="range" id="r72-slider" min="1" max="25" step="1" value="8" class="w-full h-2 bg-emerald-950 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                <p class="text-sm text-emerald-200 mt-4 text-center" data-t="r72_hint">Adjust the interest rate to see</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center text-sm">
+        <p data-t="footer">&copy; 2026 Financial Data Analysis. For educational purposes only.</p>
+    </footer>
+
+    <script>
+        // ─── Translation data ───────────────────────────────────────────────
+        const translations = {
+            en: {
+                nav_concept: "Concept",
+                nav_simulator: "Calculator",
+                nav_time: "Importance of Time",
+                hero_prefix: "Discover the ",
+                hero_highlight: "Eighth Wonder of the World",
+                hero_sub: '"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn\'t, pays it." Experience the extraordinary power that time gives to your money.',
+                hero_cta: "Start Calculating ↓",
+                concept_title: "The Basic Mechanism",
+                concept_sub: "This section explains the key difference between simple interest and compound interest.",
+                simple_vs_compound: "Simple vs Compound Interest",
+                simple_desc: '<strong>Simple Interest:</strong> Growth is calculated only on the original amount (Principal) you deposited. It grows in a straight line.',
+                compound_desc: '<strong>Compound Interest:</strong> Growth is calculated on both the principal and the previously earned interest. Interest earns interest, resulting in exponential growth over time.',
+                formula_title: "The Formula",
+                formula_legend: "A = Total amount, P = Principal, r = Annual interest rate, n = Compounding frequency, t = Time (years)",
+                sim_title: "Interactive Simulator",
+                sim_sub: "Adjust the variables below to see how time, monthly savings, and interest rates affect your future financial position.",
+                lbl_principal: "Initial Deposit",
+                lbl_monthly: "Monthly Contribution",
+                lbl_years: "Time (Years)",
+                lbl_rate: "Annual Interest Rate",
+                res_total_label: "Future Total Value",
+                res_invest_label: "Your Total Investment",
+                res_interest_label: "Total Interest Earned",
+                time_title: "The Price of Time",
+                time_sub: "Time is the most important factor in investing. Here we show how starting small early beats investing more later.",
+                story_title: "A Tale of Two Investors",
+                story_intro: "Let's compare two investors who retire at age 65 with an annual return of 10%.",
+                inv_a_title: "Investor 'A' — The Early Starter",
+                inv_a_desc: 'Invests Rs. 10,000/month from age 25 to 35 only (just 10 years), then <strong>stops investing</strong>. But lets the money grow with compound interest until age 65.',
+                inv_b_title: "Investor 'B' — The Late Starter",
+                inv_b_desc: 'Waits until age 35 to start. Continuously invests Rs. 10,000/month from age 35 to 65 (30 full years).',
+                story_conclusion: "Even though Investor B puts in three times the money, Investor A's fund grows larger — because of the extra time gained by starting early.",
+                r72_title: "Rule of 72",
+                r72_desc: "A quick way to estimate how long it takes to double your investment. Simply divide 72 by your annual interest rate.",
+                r72_hint: "Adjust the interest rate to see",
+                footer: "© 2026 Financial Data Analysis. For educational purposes only.",
+                // dynamic labels
+                years_label: v => `${v} Years`,
+                year_axis: yr => `Year ${yr}`,
+                age_axis: a => `Age ${a}`,
+                years_result: y => `${y} years`,
+                chart_simple: "Simple Interest",
+                chart_compound: "Compound Interest",
+                chart_invested: "Amount Invested",
+                chart_interest: "Interest Earned",
+                chart_inv_a: "Investor A",
+                chart_inv_b: "Investor B",
+            },
+            si: {
+                nav_concept: "සංකල්පය",
+                nav_simulator: "ගණක යන්ත්‍රය",
+                nav_time: "කාලයෙහි වැදගත්කම",
+                hero_prefix: "ලෝකයේ ",
+                hero_highlight: "අටවැනි පුදුමය හඳුනාගන්න",
+                hero_sub: '"වැල් පොලිය යනු ලෝකයේ අටවැනි පුදුමයයි. එය තේරුම් ගන්නා තැනැත්තා එය උපයයි; තේරුම් නොගන්නා තැනැත්තා එය ගෙවයි." කාලය ඔබේ මුදලට ලබා දෙන අසිරිමත් බලය අත්විඳින්න.',
+                hero_cta: "ගණනය කිරීම අරඹන්න ↓",
+                concept_title: "මූලික යාන්ත්‍රණය",
+                concept_sub: "මෙම කොටස මගින් සරල පොලිය සහ වැල් පොලිය අතර ඇති ප්‍රධාන වෙනස පැහැදිලි කරයි.",
+                simple_vs_compound: "සරල vs වැල් පොලිය",
+                simple_desc: '<strong>සරල පොලිය (Simple Interest):</strong> වර්ධනය ගණනය කරනු ලබන්නේ ඔබ මුලින්ම තැන්පත් කළ මුදල (Principal) මත පමණි. මෙය සරල රේඛාවක ආකාරයෙන් වර්ධනය වේ.',
+                compound_desc: '<strong>වැල් පොලිය (Compound Interest):</strong> වර්ධනය ගණනය කරනු ලබන්නේ මුල් මුදල මෙන්ම කලින් ලැබුණු පොලිය මතද වේ. මෙහිදී පොලියටත් පොලිය එකතු වීම නිසා කාලයත් සමග ඉතා වේගවත් වර්ධනයක් දක්නට ලැබේ.',
+                formula_title: "සූත්‍රය (The Formula)",
+                formula_legend: "A = මුළු මුදල, P = මුල් තැන්පතුව, r = වාර්ෂික පොලී අනුපාතිකය, n = පොලිය එකතු වන වාර ගණන, t = කාලය (අවුරුදු)",
+                sim_title: "අන්තර්ක්‍රියාකාරී සිමියුලේටරය",
+                sim_sub: "පහත විචල්‍යයන් වෙනස් කර කාලය, මාසික ඉතිරි කිරීම් සහ පොලී අනුපාත ඔබේ අනාගත මූල්‍ය තත්ත්වයට බලපාන ආකාරය බලන්න.",
+                lbl_principal: "මුල් තැන්පතුව",
+                lbl_monthly: "මාසිකව එකතු කරන මුදල",
+                lbl_years: "කාලය (අවුරුදු)",
+                lbl_rate: "වාර්ෂික පොලී අනුපාතය",
+                res_total_label: "අනාගත මුළු වටිනාකම",
+                res_invest_label: "ඔබේ මුළු ආයෝජනය",
+                res_interest_label: "උපයන මුළු පොලිය",
+                time_title: "කාලයෙහි මිල",
+                time_sub: "ආයෝජනයේදී කාලය යනු වැදගත්ම සාධකයයි. පසුව වැඩි මුදලක් ආයෝජනය කිරීමට වඩා කලින් කුඩා මුදලකින් ඇරඹීම වාසිදායක වන ආකාරය මෙහි දැක්වේ.",
+                story_title: "ආයෝජකයන් දෙදෙනෙකුගේ කතාව",
+                story_intro: "වාර්ෂිකව 10% ක ප්‍රතිලාභයක් යටතේ වයස 65 දී විශ්‍රාම යන ආයෝජකයන් දෙදෙනෙකු සසඳා බලමු.",
+                inv_a_title: "ආයෝජක 'A' - වේලාසන ඇරඹූ අය",
+                inv_a_desc: 'වයස 25 සිට 35 දක්වා පමණක් මසකට රු. 10,000 ක් ආයෝජනය කර (වසර 10 ක් පමණි) ඉන්පසු <strong>ආයෝජනය නතර කරයි</strong>. නමුත් මුදල වයස 65 දක්වා වැල් පොලියට වර්ධනය වීමට ඉඩ හරී.',
+                inv_b_title: "ආයෝජක 'B' - ප්‍රමාද වී ඇරඹූ අය",
+                inv_b_desc: 'වයස 35 වනතුරු බලා සිටී. වයස 35 සිට 65 දක්වා (වසර 30 ක් පුරා) මසකට රු. 10,000 බැගින් දිගටම ආයෝජනය කරයි.',
+                story_conclusion: "ආයෝජක B තුන්ගුණයක් මුදල් ආයෝජනය කළද, ආයෝජක A ගේ අරමුදල විශාල වන්නේ ඔහුට ලැබුණු වැඩි කාලය නිසාවෙනි.",
+                r72_title: "72 නීතිය (Rule of 72)",
+                r72_desc: "ඔබේ ආයෝජනය දෙගුණ වීමට ගතවන කාලය සරලව සිතා ගැනීමට මෙය උදවු වේ. 72 අගය ඔබේ වාර්ෂික පොලී අනුපාතයෙන් බෙදන්න.",
+                r72_hint: "පොලී අනුපාතය වෙනස් කර බලන්න",
+                footer: "© 2026 මූල්‍ය දත්ත විශ්ලේෂණය. අධ්‍යාපනික අරමුණු සඳහා පමණි.",
+                // dynamic labels
+                years_label: v => `අවුරුදු ${v}`,
+                year_axis: yr => `වසර ${yr}`,
+                age_axis: a => `වයස ${a}`,
+                years_result: y => `වසර ${y}`,
+                chart_simple: "සරල පොලිය",
+                chart_compound: "වැල් පොලිය",
+                chart_invested: "ආයෝජිත මුදල",
+                chart_interest: "ලැබුණු පොලිය",
+                chart_inv_a: "ආයෝජක A",
+                chart_inv_b: "ආයෝජක B",
+            }
+        };
+
+        let currentLang = 'en';
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-si').classList.toggle('active', lang === 'si');
+            document.documentElement.lang = lang;
+
+            const t = translations[lang];
+
+            // Static text nodes
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (t[key] !== undefined && typeof t[key] === 'string') {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // Re-run update to refresh dynamic chart labels & result labels
+            update();
+            updateRule72();
+            rebuildCharts();
+        }
+
+        // ─── Formatters ─────────────────────────────────────────────────────
+        const formatRs = (val) => "Rs. " + new Intl.NumberFormat('en-LK', { maximumFractionDigits: 0 }).format(val);
+
+        const commonOptions = () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { font: { family: 'Noto Sans Sinhala, Inter, sans-serif', size: 13 } } },
+                tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + formatRs(c.parsed.y) } }
+            },
+            scales: {
+                y: { ticks: { callback: (v) => 'Rs.' + (v >= 100000 ? (v/100000).toFixed(1) + 'L' : (v/1000).toFixed(0) + 'k') } }
+            }
+        });
+
+        // ─── Concept Chart ───────────────────────────────────────────────────
+        let conceptChart, simChart, scenarioChart;
+
+        function buildConceptChart() {
+            const t = translations[currentLang];
+            const ctxC = document.getElementById('conceptChart').getContext('2d');
+            if (conceptChart) conceptChart.destroy();
+            conceptChart = new Chart(ctxC, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 31}, (_, i) => i),
+                    datasets: [
+                        { label: t.chart_simple, data: Array.from({length: 31}, (_, i) => 100000 + (100000 * 0.1 * i)), borderColor: '#3b82f6', borderDash: [5,5] },
+                        { label: t.chart_compound, data: Array.from({length: 31}, (_, i) => 100000 * Math.pow(1.1, i)), borderColor: '#10b981', borderWidth: 3 }
+                    ]
+                },
+                options: commonOptions()
+            });
+        }
+
+        // ─── Simulator ───────────────────────────────────────────────────────
+        function buildSimChart() {
+            const t = translations[currentLang];
+            const simCtx = document.getElementById('simulatorChart').getContext('2d');
+            if (simChart) simChart.destroy();
+            simChart = new Chart(simCtx, {
+                type: 'bar',
+                data: { labels: [], datasets: [
+                    { label: t.chart_invested, data: [], backgroundColor: '#3b82f6', stack: 's' },
+                    { label: t.chart_interest, data: [], backgroundColor: '#10b981', stack: 's' }
+                ]},
+                options: { ...commonOptions(), scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (v) => 'Rs.' + (v >= 100000 ? (v/100000).toFixed(1) + 'L' : (v/1000).toFixed(0) + 'k') } } } }
+            });
+        }
+
+        function update() {
+            const t = translations[currentLang];
+            const p = parseFloat(document.getElementById('calc-principal').value);
+            const m = parseFloat(document.getElementById('calc-monthly').value);
+            const y = parseInt(document.getElementById('calc-years').value);
+            const r = parseFloat(document.getElementById('calc-rate').value) / 100;
+
+            document.getElementById('val-principal').innerText = formatRs(p);
+            document.getElementById('val-monthly').innerText = formatRs(m);
+            document.getElementById('val-years').innerText = t.years_label(y);
+            document.getElementById('val-rate').innerText = (r*100).toFixed(1) + '%';
+
+            let labels = [], pData = [], iData = [], bal = p, totalP = p;
+            for(let yr = 0; yr <= y; yr++){
+                labels.push(t.year_axis(yr));
+                if(yr > 0) {
+                    for(let mon = 0; mon < 12; mon++) {
+                        bal = (bal + m) * (1 + r/12);
+                        totalP += m;
+                    }
+                }
+                pData.push(totalP);
+                iData.push(bal - totalP);
+            }
+            document.getElementById('res-total').innerText = formatRs(bal);
+            document.getElementById('res-principal').innerText = formatRs(totalP);
+            document.getElementById('res-interest').innerText = formatRs(bal - totalP);
+
+            if (simChart) {
+                simChart.data.labels = labels;
+                simChart.data.datasets[0].data = pData;
+                simChart.data.datasets[1].data = iData;
+                simChart.update();
+            }
+        }
+
+        // ─── Scenario Chart ──────────────────────────────────────────────────
+        function buildScenarioChart() {
+            const t = translations[currentLang];
+            let valA = 0, valB = 0, dataA = [], dataB = [], ages = [25,30,35,40,45,50,55,60,65];
+            for(let age = 25; age <= 65; age++){
+                for(let mo = 0; mo < 12; mo++){
+                    valA = (valA + (age <= 35 ? 10000 : 0)) * (1 + 0.1/12);
+                    valB = (valB + (age > 35 ? 10000 : 0)) * (1 + 0.1/12);
+                }
+                if(ages.includes(age)) { dataA.push(valA); dataB.push(valB); }
+            }
+            const scCtx = document.getElementById('scenarioChart').getContext('2d');
+            if (scenarioChart) scenarioChart.destroy();
+            scenarioChart = new Chart(scCtx, {
+                type: 'line',
+                data: {
+                    labels: ages.map(a => t.age_axis(a)),
+                    datasets: [
+                        { label: t.chart_inv_a, data: dataA, borderColor: '#10b981', fill: true, backgroundColor: 'rgba(16,185,129,0.05)' },
+                        { label: t.chart_inv_b, data: dataB, borderColor: '#3b82f6' }
+                    ]
+                },
+                options: commonOptions()
+            });
+        }
+
+        function rebuildCharts() {
+            buildConceptChart();
+            buildSimChart();
+            update();
+            buildScenarioChart();
+        }
+
+        // ─── Rule of 72 ──────────────────────────────────────────────────────
+        function updateRule72() {
+            const t = translations[currentLang];
+            const v = document.getElementById('r72-slider').value;
+            document.getElementById('r72-rate-display').innerText = v + '%';
+            document.getElementById('r72-years-display').innerText = t.years_result((72/v).toFixed(1));
+        }
+
+        document.getElementById('r72-slider').oninput = () => updateRule72();
+
+        // ─── Slider listeners ────────────────────────────────────────────────
+        ['calc-principal', 'calc-monthly', 'calc-years', 'calc-rate'].forEach(id => {
+            document.getElementById(id).oninput = update;
+        });
+
+        // ─── Init ────────────────────────────────────────────────────────────
+        rebuildCharts();
+        updateRule72();
+    </script>
+</body>
+</html>
